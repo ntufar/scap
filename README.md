@@ -97,6 +97,7 @@ python -m src.cli run_pipeline --stage gold
 ### Core Documentation
 - **[Project Specification](specs/master/spec.md)** - Complete feature requirements
 - **[Technical Plan](specs/master/plan.md)** - Architecture and implementation details
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - Detailed system architecture and diagrams
 - **[Data Model](specs/master/data-model.md)** - Entity relationships and validation rules
 - **[Quickstart Guide](specs/master/quickstart.md)** - Step-by-step setup instructions
 

@@ -11,11 +11,11 @@
 
 ## Phase 2 — Foundational (blocking for all stories)
 
-- [ ] T007 Implement crosswalk model/table definitions in src/models/crosswalk.py
-- [ ] T008 Implement identity resolution functions in src/models/identity_resolution.py
-- [ ] T009 Implement freshness status table and updater in src/models/freshness.py
-- [ ] T010 Implement publish gate (block on critical DQ) in src/lib/publish_gate.py
- - [ ] T010a Implement bronze-level schema validation at ingestion (contracts + enforcement)
+- [X] T007 Implement crosswalk model/table definitions in src/models/crosswalk.py
+- [X] T008 Implement identity resolution functions in src/models/identity_resolution.py
+- [X] T009 Implement freshness status table and updater in src/models/freshness.py
+- [X] T010 Implement publish gate (block on critical DQ) in src/lib/publish_gate.py
+ - [X] T010a Implement bronze-level schema validation at ingestion (contracts + enforcement)
 
 ## Phase 3 — User Story 1 (P1) Unified Supply Chain Data
 
