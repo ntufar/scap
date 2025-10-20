@@ -30,14 +30,19 @@ class SupplyChainCLI:
         self.logger = get_logger(self.__class__.__name__)
     
     def init_spark(self, app_name: str = "SupplyChainCLI") -> None:
-        """Initialize Spark session."""
+        """Initialize Spark session for Databricks environment."""
         if self.spark is None:
-            self.spark = SparkSession.builder \
-                .appName(app_name) \
-                .config("spark.sql.adaptive.enabled", "true") \
-                .config("spark.sql.adaptive.coalescePartitions.enabled", "true") \
-                .getOrCreate()
-            self.logger.info("Spark session initialized")
+            # In Databricks, Spark session is already available
+            try:
+                from pyspark.sql import SparkSession
+                self.spark = SparkSession.getActiveSession()
+                if self.spark is None:
+                    self.spark = SparkSession.builder.appName(app_name).getOrCreate()
+                self.logger.info("Spark session initialized for Databricks")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize Spark session: {str(e)}")
+                self.logger.error("Make sure you're running this in a Databricks environment")
+                raise
     
     def cleanup(self) -> None:
         """Cleanup resources."""
@@ -56,6 +61,13 @@ def simulate_data(args) -> None:
         domain = args.domain
         output_path = args.output_path
         record_count = args.record_count
+        
+        # Convert paths to Databricks DBFS format
+        if not output_path.startswith('/dbfs/') and not output_path.startswith('dbfs:'):
+            if output_path.startswith('/tmp/'):
+                output_path = output_path.replace('/tmp/', '/dbfs/tmp/')
+            elif not output_path.startswith('/'):
+                output_path = f"/dbfs/tmp/{output_path}"
         
         cli.logger.info(f"Simulating {record_count} records for domain: {domain}")
         
@@ -114,7 +126,8 @@ def _simulate_supplier_data(spark: SparkSession, output_path: str, count: int) -
     ])
     
     df = spark.createDataFrame(suppliers, schema)
-    df.write.mode("overwrite").json(output_path)
+    # Write as Delta table for Databricks
+    df.write.format("delta").mode("overwrite").save(output_path)
 
 
 def _simulate_shipment_data(spark: SparkSession, output_path: str, count: int) -> None:
@@ -163,7 +176,8 @@ def _simulate_shipment_data(spark: SparkSession, output_path: str, count: int) -
     ])
     
     df = spark.createDataFrame(shipments, schema)
-    df.write.mode("overwrite").json(output_path)
+    # Write as Delta table for Databricks
+    df.write.format("delta").mode("overwrite").save(output_path)
 
 
 def _simulate_inventory_data(spark: SparkSession, output_path: str, count: int) -> None:
@@ -204,7 +218,8 @@ def _simulate_inventory_data(spark: SparkSession, output_path: str, count: int) 
     ])
     
     df = spark.createDataFrame(inventory, schema)
-    df.write.mode("overwrite").json(output_path)
+    # Write as Delta table for Databricks
+    df.write.format("delta").mode("overwrite").save(output_path)
 
 
 def load_data(args) -> None:
@@ -297,20 +312,22 @@ def run_pipeline(args) -> None:
 
 
 def setup_environment(args) -> None:
-    """Setup Unity Catalog environment."""
+    """Setup Databricks environment."""
     cli = SupplyChainCLI()
     try:
         cli.init_spark("EnvironmentSetup")
         
-        cli.logger.info("Setting up Unity Catalog environment...")
+        cli.logger.info("Setting up Databricks environment...")
         
-        # Setup Unity Catalog
-        setup_unity_catalog(cli.spark)
+        # Setup Databricks environment
+        from src.pipelines.setup_databricks import setup_databricks_environment
+        setup_databricks_environment(cli.spark)
         
-        cli.logger.info("Environment setup completed successfully")
+        cli.logger.info("Databricks environment setup completed successfully")
         
     except Exception as e:
         cli.logger.error(f"Environment setup failed: {str(e)}")
+        cli.logger.error("Make sure you're running this in a Databricks environment")
         sys.exit(1)
     finally:
         cli.cleanup()

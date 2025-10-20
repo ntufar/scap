@@ -300,3 +300,7 @@ def create_identity_resolver(spark_session, entity_types: List[str] = None) -> I
         }
     
     return resolver
+
+
+# Alias for backward compatibility
+IdentityResolutionModel = IdentityResolver

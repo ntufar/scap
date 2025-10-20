@@ -1,0 +1,36 @@
+{
+  "name": "scap-setup-environment",
+  "description": "Setup Databricks environment for Navigator Supply Chain Lakehouse",
+  "max_concurrent_runs": 1,
+  "timeout_seconds": 3600,
+  "tasks": [
+    {
+      "task_key": "setup_unity_catalog",
+      "description": "Setup Unity Catalog environment and initialize sample data",
+      "python_wheel_task": {
+        "package_name": "scap",
+        "entry_point": "setup_uc",
+        "parameters": []
+      },
+      "serverless": true,
+      "environment_key": "default"
+    }
+  ],
+  "environments": [
+    {
+      "environment_key": "default",
+      "name": "default",
+      "spec": {
+        "client": "2",
+        "dependencies": [
+          "databricks-sdk"
+        ]
+      }
+    }
+  ],
+  "tags": {
+    "project": "scap",
+    "environment": "default",
+    "component": "setup"
+  }
+}

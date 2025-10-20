@@ -2,10 +2,12 @@
   "environments": {
     "default": {
       "profile": "DEFAULT",
-      "workspace_dir": "/Shared/scap",
-      "artifact_location": "dbfs:/FileStore/scap/artifacts"
+      "workspace_dir": "/Shared/scap_deployment_v2",
+      "artifact_location": "dbfs:/Volumes/main/default/navigator_supply_chain/artifacts",
+      "properties": {
+        "workspace_directory": "/Shared/scap_deployment_v2",
+        "artifact_location": "dbfs:/Volumes/main/default/navigator_supply_chain/artifacts"
+      }
     }
   }
 }
-
-

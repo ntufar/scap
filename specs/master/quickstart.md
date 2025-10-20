@@ -1,48 +1,88 @@
 # Quickstart: Navigator Supply Chain Lakehouse
 
 ## Prerequisites
-- Databricks workspace with Unity Catalog
-- Python 3.11 locally
-- dbx installed (`pip install dbx`)
+- Databricks workspace with Unity Catalog enabled
+- Databricks CLI configured: `databricks configure`
+- Python 3.11+ locally
+- Access to Unity Catalog volumes for artifact storage
 
 ## Setup
-1. Clone repository and create virtual env
-2. Configure Databricks CLI and set workspace host/token
-3. Create catalogs/schemas for bronze, silver, gold
+1. Clone repository locally
+2. Install dependencies: `pip install -r requirements.txt`
+3. Configure Databricks CLI: `databricks configure`
+4. Deploy jobs to Databricks: `./scripts/deploy.sh`
 
-## Run Pipelines (Local Simulation)
+## Run Pipelines (Using Databricks CLI)
 
-### 1. Setup Environment
+### 1. Deploy Jobs to Databricks
 ```bash
-# Setup Unity Catalog environment
-python -m src.cli setup
+# Deploy all jobs to Databricks
+./scripts/deploy.sh
+
+# Deploy specific job
+./scripts/deploy.sh --job setup-environment
+
+# Deploy with custom parameters
+./scripts/deploy.sh --job data-pipeline --params '{"stage": "bronze"}'
 ```
 
-### 2. Simulate Sample Data
+### 2. Setup Environment
 ```bash
-# Generate sample data for testing
-python -m src.cli simulate --domain supplier --output-path /tmp/supplier_data --record-count 1000
-python -m src.cli simulate --domain shipment --output-path /tmp/shipment_data --record-count 500
-python -m src.cli simulate --domain inventory --output-path /tmp/inventory_data --record-count 2000
+# Run the setup job
+databricks jobs run-now --job-id $(cat .databricks/job-ids/setup-environment.txt)
+
+# Or use the management script
+./scripts/run.sh setup-environment
 ```
 
-### 3. Load Data to Bronze Layer
+### 3. Simulate Sample Data
 ```bash
-# Load simulated data to bronze tables
-python -m src.cli load --domain supplier --source-path /tmp/supplier_data
-python -m src.cli load --domain shipment --source-path /tmp/shipment_data
-python -m src.cli load --domain inventory --source-path /tmp/inventory_data
+# Run data simulation job
+./scripts/run.sh simulate-data
+
+# Run with custom parameters
+./scripts/run.sh simulate-data --params '{"domain": "supplier", "record_count": 1000}'
 ```
 
 ### 4. Run Data Pipeline
 ```bash
-# Run individual stages
-python -m src.cli run --stage bronze
-python -m src.cli run --stage silver --domain all
-python -m src.cli run --stage gold
+# Run complete data pipeline
+./scripts/run.sh data-pipeline
 
-# Or run complete pipeline
-python -m src.cli run --stage all
+# Run individual pipeline stages
+./scripts/run.sh data-pipeline --params '{"stage": "bronze"}'
+./scripts/run.sh data-pipeline --params '{"stage": "silver"}'
+./scripts/run.sh data-pipeline --params '{"stage": "gold"}'
+```
+
+### 5. Monitor Jobs
+```bash
+# List all jobs
+./scripts/list-jobs.sh
+
+# Get job status
+./scripts/status.sh setup-environment
+
+# Get job run details
+databricks runs get --run-id <run-id>
+
+# Get job logs
+databricks runs get-output --run-id <run-id>
+```
+
+### 6. Job Management
+```bash
+# Start a job
+./scripts/start.sh <job-name>
+
+# Stop a running job
+./scripts/stop.sh <run-id>
+
+# Delete a job
+./scripts/delete.sh <job-name>
+
+# Update job configuration
+./scripts/update.sh <job-name>
 ```
 
 ## Query Examples

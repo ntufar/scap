@@ -229,3 +229,7 @@ def create_default_crosswalks(spark_session, domain: str = "supplier") -> None:
             )
         
         logger.info(f"Created {len(sample_mappings)} default crosswalk mappings for {domain} domain")
+
+
+# Alias for backward compatibility
+CrosswalkModel = CrosswalkManager

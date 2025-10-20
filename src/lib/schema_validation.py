@@ -15,6 +15,11 @@ from enum import Enum
 logger = logging.getLogger(__name__)
 
 
+class SchemaValidationError(Exception):
+    """Exception raised when schema validation fails."""
+    pass
+
+
 class ValidationSeverity(Enum):
     """Severity levels for validation errors."""
     ERROR = "error"
@@ -464,3 +469,29 @@ def create_schema_validator(spark_session) -> SchemaValidator:
     validator = SchemaValidator(spark_session)
     validator.create_validation_log_table()
     return validator
+
+
+def validate_schema(data_df, schema_name: str, source_system: str, spark_session=None) -> ValidationResult:
+    """
+    Convenience function to validate data against a schema.
+    
+    Args:
+        data_df: DataFrame or list of records to validate
+        schema_name: Name of the schema to validate against
+        source_system: Source system identifier
+        spark_session: Optional Spark session
+        
+    Returns:
+        ValidationResult: Result of the validation
+        
+    Raises:
+        SchemaValidationError: If validation fails critically
+    """
+    validator = SchemaValidator(spark_session)
+    result = validator.validate_data(data_df, schema_name, source_system)
+    
+    if not result.is_valid:
+        error_messages = [f"{e.field_path}: {e.message}" for e in result.errors]
+        raise SchemaValidationError(f"Schema validation failed: {'; '.join(error_messages)}")
+    
+    return result

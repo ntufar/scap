@@ -1,0 +1,81 @@
+{
+  "name": "scap-simulate-data",
+  "description": "Simulate sample data for Navigator Supply Chain Lakehouse",
+  "max_concurrent_runs": 1,
+  "timeout_seconds": 1800,
+  "tasks": [
+    {
+      "task_key": "simulate_supplier_data",
+      "description": "Generate simulated supplier data",
+      "python_wheel_task": {
+        "package_name": "scap",
+        "entry_point": "simulate_data",
+        "parameters": [
+          "--domain", "supplier",
+          "--output_path", "/Volumes/main/default/navigator_supply_chain/bronze/supplier",
+          "--record_count", "1000"
+        ]
+      },
+      "serverless": true,
+      "environment_key": "default"
+    },
+    {
+      "task_key": "simulate_shipment_data",
+      "description": "Generate simulated shipment data",
+      "python_wheel_task": {
+        "package_name": "scap",
+        "entry_point": "simulate_data",
+        "parameters": [
+          "--domain", "shipment",
+          "--output_path", "/Volumes/main/default/navigator_supply_chain/bronze/shipment",
+          "--record_count", "5000"
+        ]
+      },
+      "serverless": true,
+      "environment_key": "default",
+      "depends_on": [
+        {
+          "task_key": "simulate_supplier_data"
+        }
+      ]
+    },
+    {
+      "task_key": "simulate_inventory_data",
+      "description": "Generate simulated inventory data",
+      "python_wheel_task": {
+        "package_name": "scap",
+        "entry_point": "simulate_data",
+        "parameters": [
+          "--domain", "inventory",
+          "--output_path", "/Volumes/main/default/navigator_supply_chain/bronze/inventory",
+          "--record_count", "2000"
+        ]
+      },
+      "serverless": true,
+      "environment_key": "default",
+      "depends_on": [
+        {
+          "task_key": "simulate_supplier_data"
+        }
+      ]
+    }
+  ],
+  "environments": [
+    {
+      "environment_key": "default",
+      "name": "default",
+      "spec": {
+        "client": "2",
+        "dependencies": [
+          "databricks-sdk",
+          "faker"
+        ]
+      }
+    }
+  ],
+  "tags": {
+    "project": "scap",
+    "environment": "default",
+    "component": "simulation"
+  }
+}
