@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.dist-info/
+.eggs/
+*.egg-info/
+.build/
+build/
+dist/
+.pytest_cache/
+.coverage*
+htmlcov/
+.ipynb_checkpoints/
+.env*
+*.log
+
+# Databricks/dbx
+.dbx/target/
+.dbx/logs/
+
+# General
+node_modules/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+

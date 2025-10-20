@@ -1,0 +1,6 @@
+environments:
+  default:
+    workflows: []
+    artifacts:
+      - source: "."
+        destination: "dbfs:/FileStore/scap/artifacts"

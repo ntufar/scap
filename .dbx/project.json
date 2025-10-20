@@ -1,0 +1,11 @@
+{
+  "environments": {
+    "default": {
+      "profile": "DEFAULT",
+      "workspace_dir": "/Shared/scap",
+      "artifact_location": "dbfs:/FileStore/scap/artifacts"
+    }
+  }
+}
+
+

@@ -2,12 +2,12 @@
 
 ## Phase 1 — Setup
 
-- [ ] T001 Initialize single-project structure per plan.md (src/, tests/) at repo root
-- [ ] T002 Configure Databricks CLI and dbx project scaffolding in `src/` and `.dbx/`
-- [ ] T003 Create Unity Catalog objects (catalogs/schemas) for bronze, silver, gold
-- [ ] T004 Add Python 3.11 env and dependencies (pyspark, delta-spark, dbx, mlflow) in `requirements.txt`
-- [ ] T005 Create logging utility in src/lib/logging.py
-- [ ] T006 Create DQ helper in src/lib/dq.py
+- [X] T001 Initialize single-project structure per plan.md (src/, tests/) at repo root
+- [X] T002 Configure Databricks CLI and dbx project scaffolding in `src/` and `.dbx/`
+- [X] T003 Create Unity Catalog objects (catalogs/schemas) for bronze, silver, gold
+- [X] T004 Add Python 3.11 env and dependencies (pyspark, delta-spark, dbx, mlflow) in `requirements.txt`
+- [X] T005 Create logging utility in src/lib/logging.py
+- [X] T006 Create DQ helper in src/lib/dq.py
 
 ## Phase 2 — Foundational (blocking for all stories)
 
