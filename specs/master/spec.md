@@ -116,6 +116,8 @@ to consumption; access policies restrict non-authorized roles.
 
 - FR-011: Target freshness by domain MUST be: supplier daily; logistics hourly;
   inventory near-real-time (<=5 minutes) with status visibility per domain.
+  This requirement is authoritative for freshness targets; earlier clarifications
+  reference this source of truth.
 
 - FR-012: Access role taxonomy MUST include: analyst (read curated datasets);
   engineer (development and operations management); auditor (read lineage and
@@ -133,7 +135,9 @@ to consumption; access policies restrict non-authorized roles.
 
 - FR-015: Observability MUST include structured logs; metrics for latency,
   throughput, and data quality pass/fail; dataset-level lineage; and alerts on
-  SLA/freshness breaches.
+  SLA/freshness and DQ breaches via an alerting channel (e.g., Databricks Jobs
+  alerts or webhook). Acceptance: alerts are emitted within 10 minutes of breach
+  detection and recorded in logs/metrics.
 
 ### Key Entities (include if feature involves data)
 
@@ -153,7 +157,8 @@ to consumption; access policies restrict non-authorized roles.
 - SC-003: KPI queries for the validation set produce expected values within 1%
   tolerance of hand-calculated results.
 - SC-004: Freshness status for each domain is visible, and breaches are flagged
-  within 10 minutes of detection.
+  within 10 minutes of detection via configured alerting channel and dashboard
+  indicator.
 - SC-005: Access controls prevent non-authorized users from reading governed
   outputs in 100% of tested cases.
 - SC-006: Observability metrics capture pipeline latency/throughput and DQ
@@ -170,6 +175,6 @@ to consumption; access policies restrict non-authorized roles.
 
 ## Clarifications Needed (max 3)
 
- 
-
-
+1. Confirm alerting channel preference (email, webhook, Slack) for SLA/DQ breaches.
+2. Confirm baseline cluster configuration used for KPI latency measurement.
+3. Confirm retention enforcement mechanism (Unity Catalog retention vs VACUUM/DELETE policy).

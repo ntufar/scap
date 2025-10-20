@@ -15,6 +15,7 @@
 - [ ] T008 Implement identity resolution functions in src/models/identity_resolution.py
 - [ ] T009 Implement freshness status table and updater in src/models/freshness.py
 - [ ] T010 Implement publish gate (block on critical DQ) in src/lib/publish_gate.py
+ - [ ] T010a Implement bronze-level schema validation at ingestion (contracts + enforcement)
 
 ## Phase 3 — User Story 1 (P1) Unified Supply Chain Data
 
@@ -52,18 +53,23 @@ Independent Test: Critical DQ failures block publish; lineage visible; RBAC enfo
 - [ ] T027 [P] [US3] Implement lineage metadata capture in src/lib/lineage.py
 - [ ] T028 [US3] Define Unity Catalog grants and masks in src/pipelines/security/grants.sql
 - [ ] T029 [US3] Expose freshness endpoint contract via notebook/SQL function in src/pipelines/sql/freshness_fn.sql
+ - [ ] T029a [US3] Implement alerting for SLA/freshness/DQ breaches (Databricks alerts/integration)
 
 ## Phase 6 — Contracts Alignment
 
 - [ ] T030 Align unified-records contract to curated views in src/pipelines/sql/unified_view.sql
 - [ ] T031 Implement freshness status contract producer in src/pipelines/sql/freshness_fn.sql
 - [ ] T032 Implement DQ status contract producer in src/pipelines/sql/dq_status_fn.sql
+ - [ ] T032a Generate and publish data dictionary from schemas/Unity Catalog comments to docs/
 
 ## Final Phase — Polish & Cross-Cutting
 
 - [ ] T033 Add runbook for ops failures in docs/runbook.md
 - [ ] T034 Add sample validation dataset and expected KPI values in docs/validation/
 - [ ] T035 Add CI workflow for contract/integration checks in .github/workflows/ci.yml
+ - [ ] T036 Add retention enforcement (VACUUM/TTL policies, deletion workflow) and tests
+ - [ ] T037 Document role taxonomy and default grants/masks mapping in docs/governance/roles.md
+ - [ ] T038 Verify KPI performance target in CI (P95 ≤5s) with automated timing
 
 ## Dependencies (Story Order)
 

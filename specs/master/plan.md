@@ -1,7 +1,7 @@
 # Implementation Plan: Navigator Supply Chain Lakehouse
 
-**Branch**: `master` | **Date**: 2025-10-20 | **Spec**: `C:\projects\scap\specs\navigator-supply-chain-lakehouse\spec.md`
-**Input**: Feature specification from `/specs/navigator-supply-chain-lakehouse/spec.md`
+**Branch**: `master` | **Date**: 2025-10-20 | **Spec**: `C:\projects\scap\specs\master\spec.md`
+**Input**: Feature specification from `/specs/master/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
@@ -38,15 +38,17 @@ real-time (<= 5 minutes).
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Provisional gates (constitution placeholders detected in `C:\projects\scap\._specify\memory\constitution.md`):
+Authoritative constitution: `C:\projects\scap\.specify\memory\constitution.md`
 
-- Test-First: Define data contracts and tests before implementation; enforce Red‑Green‑Refactor.
-- CLI/Automation: Expose repeatable CLI or job entry points; text I/O where applicable.
-- Observability: Structured logs; metrics for latency/throughput/DQ pass‑fail; dataset lineage; alerts on SLA breaches.
-- Simplicity: Single-project layout; avoid premature abstractions.
-- Versioning/Breaking Changes: Version schemas and curated views; document migrations.
+Applicable gates (from constitution):
 
-Status: All gates planned with no violations at this stage. Will re-evaluate after Phase 1 design.
+- Test-First (NON-NEGOTIABLE): tests/contracts precede implementation; Red‑Green‑Refactor required.
+- CLI/Automation: repeatable CLI/job entry points; text I/O; JSON where applicable.
+- Observability: structured logs, metrics (latency/throughput/DQ), dataset lineage, alerts on SLA/DQ/freshness breaches.
+- Simplicity: single-project layout; avoid premature abstractions.
+- Versioning & Breaking Changes: version schemas/curated views; document migrations.
+
+Status: Planned with no violations at this stage; will re-evaluate after Phase 1 design.
 
 ## Project Structure
 
@@ -72,21 +74,49 @@ specs/[###-feature]/
 
 ```
 src/
-├── pipelines/              # PySpark/SQL jobs (bronze/silver/gold)
-├── models/                 # Reusable business logic (keys, transforms)
-├── cli/                    # CLI entry points for local simulations
-└── lib/                    # Utilities (logging, dq helpers)
+├── pipelines/                  # PySpark/SQL jobs (bronze/silver/gold)
+│   ├── sql/
+│   │   ├── unified_view.sql
+│   │   ├── kpis.sql
+│   │   ├── freshness_fn.sql
+│   │   └── dq_status_fn.sql
+│   ├── gold_jobs.py
+│   ├── gold_kpi_jobs.py
+│   ├── silver_jobs.py
+│   ├── bronze_jobs.py
+│   ├── maintenance.py          # OPTIMIZE/ZORDER routines
+│   └── security/               # Grants and masking SQL
+│       └── grants.sql
+├── models/                     # Reusable business logic (keys, transforms)
+│   ├── crosswalk.py
+│   ├── identity_resolution.py
+│   ├── supplier.py             # SCD2
+│   ├── shipment.py
+│   └── inventory_position.py
+├── cli/                        # CLI entry points for local simulations
+│   └── __init__.py
+└── lib/                        # Utilities (logging, dq helpers, publish gate, lineage)
+    ├── logging.py
+    ├── dq.py
+    ├── publish_gate.py
+    └── lineage.py
 
 tests/
-├── contract/               # Data contract + schema tests
-├── integration/            # End-to-end pipeline validations
-└── unit/                   # Pure Python unit tests
+├── contract/                   # Data contract + schema tests
+├── integration/                # End-to-end pipeline validations
+└── unit/                       # Pure Python unit tests
 ```
 
 **Structure Decision**: Single-project layout optimized for Databricks pipelines
-and contracts. Documentation for this feature lives in
-`C:\projects\scap\specs\navigator-supply-chain-lakehouse\`. Planning artifacts
-for this run are under `C:\projects\scap\specs\master\`.
+and contracts. Documentation and planning artifacts for this run are under
+`C:\projects\scap\specs\master\`.
+
+## Non-Functional Performance Target
+
+For the validation dataset sized to the provided synthetic inputs and on the
+baseline Databricks cluster for this project, curated KPI queries MUST achieve
+P95 latency ≤ 5 seconds. Verification will be implemented via automated query
+timing in CI against the validation dataset.
 
 ## Complexity Tracking
 
