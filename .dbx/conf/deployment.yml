@@ -1,6 +1,21 @@
 environments:
   default:
-    workflows: []
+    workflows:
+      - name: "scap-uc-setup"
+        job_clusters:
+          - job_cluster_key: "main"
+            new_cluster:
+              spark_version: "13.3.x-scala2.12"
+              node_type_id: "i3.xlarge"
+              num_workers: 1
+              data_security_mode: "SINGLE_USER"
+        tasks:
+          - task_key: "setup_unity_catalog"
+            job_cluster_key: "main"
+            python_wheel_task:
+              package_name: "scap"
+              entry_point: "setup_uc"
+              parameters: []
     artifacts:
       - source: "."
         destination: "dbfs:/FileStore/scap/artifacts"
