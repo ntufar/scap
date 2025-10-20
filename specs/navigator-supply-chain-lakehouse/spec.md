@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "Build a multi-source supply chain data platform using Databricks that demonstrates the key technical capabilities needed for Navigator 2.0. This simulates integrating supplier, logistics, and inventory data into a unified analytics layer." (derived from `docs/PSD.md`)
 
+## Clarifications
+
+### Session 2025-10-20
+
+- Q: Target freshness per domain? → A: Supplier daily; logistics hourly; inventory near-real-time (<=5 minutes)
+- Q: Access role taxonomy and default permissions? → A: Four roles — analyst (read curated), engineer (dev+ops), auditor (read lineage/QC), external partner (limited curated)
+- Q: Retention and audit policy for historical data? → A: Raw 90 days; conformed 1 year; lineage retained 90 days
+- Q: Observability signals for pipelines (minimum set)? → A: Structured logs; metrics for latency/throughput/DQ pass-fail; dataset-level lineage; alerts on SLA breaches
+- Q: Identity resolution rules for supplier and product keys? → A: Deterministic rules with explicit crosswalks and survivorship by trusted source + latest effective date
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Unified Supply Chain Data (Priority: P1)
@@ -73,6 +83,9 @@ to consumption; access policies restrict non-authorized roles.
   duplicate or lose records in time-aware views.
 - Conflicting supplier identifiers across sources; ensure robust key mapping and
   survivorship rules.
+- If conflicting attributes exist for the same business key, apply trusted
+  source precedence then latest effective date; retain audit trail of prior
+  values.
 - Sparse or missing inventory updates; ensure freshness thresholds and fallback
   logic for KPI calculations are well-defined.
 
@@ -101,6 +114,27 @@ to consumption; access policies restrict non-authorized roles.
 - FR-010: The system MUST provide a clear runbook for common operational
   failures (ingestion delays, schema drift, data gaps) and a path to recovery.
 
+- FR-011: Target freshness by domain MUST be: supplier daily; logistics hourly;
+  inventory near-real-time (<=5 minutes) with status visibility per domain.
+
+- FR-012: Access role taxonomy MUST include: analyst (read curated datasets);
+  engineer (development and operations management); auditor (read lineage and
+  quality/control artifacts); external partner (limited read to curated
+  exports). Defaults follow least-privilege; sensitive attributes are masked per
+  role.
+
+- FR-013: Data retention MUST follow: raw data retained 90 days; conformed
+  outputs retained 1 year; lineage and audit logs retained 90 days; deletions
+  are secure and compliant with policy.
+
+- FR-014: Identity resolution MUST be deterministic: exact match on natural
+  keys; explicit crosswalk mappings across sources; survivorship determined by
+  trusted source precedence and latest effective date; all merges auditable.
+
+- FR-015: Observability MUST include structured logs; metrics for latency,
+  throughput, and data quality pass/fail; dataset-level lineage; and alerts on
+  SLA/freshness breaches.
+
 ### Key Entities (include if feature involves data)
 
 - Supplier: natural key, business key, attributes, effective dating.
@@ -122,6 +156,8 @@ to consumption; access policies restrict non-authorized roles.
   within 10 minutes of detection.
 - SC-005: Access controls prevent non-authorized users from reading governed
   outputs in 100% of tested cases.
+- SC-006: Observability metrics capture pipeline latency/throughput and DQ
+  pass/fail, and alerts are raised for SLA breaches in test scenarios.
 
 ## Assumptions
 
@@ -134,11 +170,6 @@ to consumption; access policies restrict non-authorized roles.
 
 ## Clarifications Needed (max 3)
 
-- [NEEDS CLARIFICATION: Target freshness per domain? Propose: supplier daily,
-  logistics hourly, inventory near-real-time.]
-- [NEEDS CLARIFICATION: Retention and audit policy for historical data (business
-  requirements vs. cost controls).]
-- [NEEDS CLARIFICATION: Role taxonomy for access (analyst, engineer, auditor,
-  external partner) and default permissions.]
+ 
 
 
