@@ -22,16 +22,16 @@
 Goal: Unified conformed analytics layer; deterministic joins across supplier, logistics, and inventory.
 Independent Test: Single SQL query returns synchronized supplier, shipment, inventory for product/date with zero orphan keys.
 
-- [ ] T011 [US1] Create Supplier SCD2 model in src/models/supplier.py
-- [ ] T012 [P] [US1] Create Shipment model in src/models/shipment.py
-- [ ] T013 [P] [US1] Create InventoryPosition model in src/models/inventory_position.py
-- [ ] T014 [US1] Implement bronze ingestion jobs in src/pipelines/bronze_jobs.py
-- [ ] T015 [US1] Implement silver conformance (keys, crosswalks, SCD2) in src/pipelines/silver_jobs.py
-- [ ] T016 [US1] Create unified view SQL in src/pipelines/sql/unified_view.sql
-- [ ] T017 [US1] Implement late-arriving updates handling in silver logic in src/pipelines/silver_jobs.py
-- [ ] T018 [US1] Wire publish to gold tables with gate in src/pipelines/gold_jobs.py
-- [ ] T019 [US1] CLI entry points for simulate/load/run in src/cli/__init__.py
-- [ ] T020 [US1] Update quickstart steps with US1 query example in specs/master/quickstart.md
+- [X] T011 [US1] Create Supplier SCD2 model in src/models/supplier.py
+- [X] T012 [P] [US1] Create Shipment model in src/models/shipment.py
+- [X] T013 [P] [US1] Create InventoryPosition model in src/models/inventory_position.py
+- [X] T014 [US1] Implement bronze ingestion jobs in src/pipelines/bronze_jobs.py
+- [X] T015 [US1] Implement silver conformance (keys, crosswalks, SCD2) in src/pipelines/silver_jobs.py
+- [X] T016 [US1] Create unified view SQL in src/pipelines/sql/unified_view.sql
+- [X] T017 [US1] Implement late-arriving updates handling in silver logic in src/pipelines/silver_jobs.py
+- [X] T018 [US1] Wire publish to gold tables with gate in src/pipelines/gold_jobs.py
+- [X] T019 [US1] CLI entry points for simulate/load/run in src/cli/__init__.py
+- [X] T020 [US1] Update quickstart steps with US1 query example in specs/master/quickstart.md
 
 ## Phase 4 — User Story 2 (P2) Supply Chain KPI Insights
 
