@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Navigator Supply Chain Lakehouse API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /unified-records:
+    get:
+      summary: Retrieve unified supplier, logistics, and inventory records
+      description: Deterministic joins across domains for a product, location, supplier, and time window.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: locationId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: supplierId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: start
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: end
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Unified records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnifiedRecordResponse'
+  /freshness:
+    get:
+      summary: Get freshness status by domain
+      responses:
+        '200':
+          description: Freshness status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FreshnessStatus'
+  /dq/status:
+    get:
+      summary: Get data quality status for curated datasets
+      responses:
+        '200':
+          description: Data quality status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataQualityStatus'
+components:
+  schemas:
+    UnifiedRecordResponse:
+      type: object
+      properties:
+        productId:
+          type: string
+        locationId:
+          type: string
+        supplierId:
+          type: string
+        shipments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shipment'
+        inventory:
+          $ref: '#/components/schemas/InventoryPosition'
+    Shipment:
+      type: object
+      properties:
+        shipmentId:
+          type: string
+        routeId:
+          type: string
+        carrierId:
+          type: string
+        plannedDeparture:
+          type: string
+          format: date-time
+        actualDeparture:
+          type: string
+          format: date-time
+        plannedArrival:
+          type: string
+          format: date-time
+        actualArrival:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [planned, in_transit, delivered, cancelled]
+    InventoryPosition:
+      type: object
+      properties:
+        itemId:
+          type: string
+        locationId:
+          type: string
+        snapshotDate:
+          type: string
+          format: date
+        quantityOnHand:
+          type: number
+        safetyStock:
+          type: number
+        inTransitQty:
+          type: number
+    FreshnessStatus:
+      type: object
+      properties:
+        supplier:
+          $ref: '#/components/schemas/DomainFreshness'
+        logistics:
+          $ref: '#/components/schemas/DomainFreshness'
+        inventory:
+          $ref: '#/components/schemas/DomainFreshness'
+    DomainFreshness:
+      type: object
+      properties:
+        lastUpdated:
+          type: string
+          format: date-time
+        targetSlaMinutes:
+          type: integer
+        status:
+          type: string
+          enum: [ok, warning, breach]
+    DataQualityStatus:
+      type: object
+      properties:
+        dataset:
+          type: string
+        criticalChecksPassed:
+          type: boolean
+        failedChecks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FailedCheck'
+    FailedCheck:
+      type: object
+      properties:
+        checkId:
+          type: string
+        severity:
+          type: string
+          enum: [info, warning, critical]
+        message:
+          type: string
+
+

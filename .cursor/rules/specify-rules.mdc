@@ -1,0 +1,24 @@
+﻿# scap Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-10-20
+
+## Active Technologies
+- Python 3.11, SQL (Databricks SQL) + Databricks Runtime (PySpark), Delta Lake, dbx (deployment), great_expectations or expectations in Spark for DQ, MLflow (lineage/metrics) (master)
+
+## Project Structure
+```
+src/
+tests/
+```
+
+## Commands
+cd src; pytest; ruff check .
+
+## Code Style
+Python 3.11, SQL (Databricks SQL): Follow standard conventions
+
+## Recent Changes
+- master: Added Python 3.11, SQL (Databricks SQL) + Databricks Runtime (PySpark), Delta Lake, dbx (deployment), great_expectations or expectations in Spark for DQ, MLflow (lineage/metrics)
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
